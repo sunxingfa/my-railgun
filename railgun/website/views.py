@@ -416,7 +416,7 @@ def hwhandins(slug):
     This page supports page navigation, thus accepts `page` and `perpage`
     query string argument, where `page` defines the navigated page id
     (>= 1), and `perpage` defines the page size (default 10).
-
+    
     :route: /homework/<slug>/handin/
     :method: GET
     :template: homework.handins.html
@@ -621,35 +621,32 @@ def about_source():
     return translated_page_source('about')
 
 
-@app.route('/docs/')
-def docs_index():
-    """The index page of the documentation.
-
-    Documentation pages should be placed at `docs/_build/html`.
-    You may generate the documentation files by executing ``make html`` under
-    `docs` directory.
-
-    :route: /docs/
-    :method: GET
-    """
-    return send_from_directory(
-        os.path.join(app.config['RAILGUN_ROOT'], 'docs/_build/html'),
-        'index.html'
-    )
+@app.route('/release/<uuid>/', methods=['GET', 'POST'])
+def release(uuid):
+    from zinsertHw import session, Hw, hws
+    hidehw = session.query(Hw).filter(hws.c.uuid == uuid).first()
+    hideType = hidehw.hw_type
+    hideType.is_hidden = False
+    session.add(hideType)
+    session.flush()
+    flash(_('release succeed.'), 'info')
+    return redirect(url_for('index'))
 
 
-@app.route('/docs/<path:filename>')
-def docs_static(filename):
-    """The static resources of the documentation.
+@app.route('/delete/<uuid>/', methods=['GET', 'POST'])
+def delete(uuid):
+    from zinsertHw import session, Hw, hws
+    hidehw = session.query(Hw).filter(hws.c.uuid == uuid).first()
+    hideType = hidehw.hw_type
+    hideType.is_hidden = True
+    session.add(hideType)
+    session.flush()
+    flash(_('delete succeed.'), 'info')
+    return redirect(url_for('index'))
 
-    :route: /docs/
-    :method: GET
-    """
-    return send_from_directory(
-        os.path.join(app.config['RAILGUN_ROOT'], 'docs/_build/html'),
-        filename
-    )
-
+@app.route('/create_hw/')
+def create_hw():
+    return render_template('create_hw.html')
 
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
@@ -694,8 +691,7 @@ navigates.add(
                                endpoint='scores'),
             NaviItem(
                 title=lazy_gettext('Documentation'),
-                url=(app.config['ONLINE_DOC_URL'] or
-                     (lambda: url_for('docs_index'))),
+                url=app.config['ONLINE_DOC_URL'],
                 identity='documentation',
             ),
             NaviItem.make_view(title=lazy_gettext('FAQ'),

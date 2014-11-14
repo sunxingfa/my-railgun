@@ -66,6 +66,15 @@ class HwProxy(object):
         You may put the uuid of hidden homework in ``config.HIDDEN_HOMEWORKS``.
         If you wish to lock all homework assignments, put a "``*``" in it.
         """
+
+        from zinsertHw import session, Hw, HwType
+        typeiter = session.query(HwType).filter(HwType.is_hidden)
+        hidelist=[]
+        for hidetype in typeiter:
+            hidelist.extend(
+                [i.uuid for i in hidetype.hws])
+        app.config['HIDDEN_HOMEWORKS'] = hidelist
+
         return self.hw.uuid in app.config['HIDDEN_HOMEWORKS'] or \
             '*' in app.config['HIDDEN_HOMEWORKS']
 

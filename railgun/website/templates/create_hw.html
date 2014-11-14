@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<div style="background:#f1fafa; position:absolute; top:0; left:0; right:0; bottom:0">
+<h1 align="center">
+    Create New Homework!
+</h1>
+<h3>
+<form name="form" class="form-profile" method="POST" action="javascript:alert('Succeed！');">
+<table align="center" cellspacing=10 cellpadding=7>
+    <tr>
+        <td><label for="txt">Type</label></td>
+        <td><input type="text" id="type"></td>
+    </tr>
+    <tr>
+        <td><label for="txt">Basetime</label></td>
+        <td><input type="text" id="type"></td>
+    </tr>
+    <tr>
+        <td><label for="txt">Is_hidden</label></td>
+        <td align="center">
+            <select name="hidden">
+            <option value="True">True</option>
+            <option value="False">False</option>
+        </td>
+    </tr>
+</table>
+<table align="center">
+<tr>
+    <td>
+        <h1>
+            <input type="button" value="Save Hw" onclick="document.forms['form'].submit();">
+        </h1>
+    </td>
+</tr>
+</form>
+</h3>
+</div>
+</html>
